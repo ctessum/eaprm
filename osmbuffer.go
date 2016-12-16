@@ -9,7 +9,7 @@ import (
 
 // Buffer returns a FeatureFunc that sums the count (for point features),
 // length (for linear features), or area (for polygonal features) of a
-// group of features per unit buffer area within the given radius
+// group of features within the given radius
 // of each of the point locations of interest.
 func Buffer(radius float64) FeatureFunc {
 	return func(features []*osm.GeomTags, points []geom.Point) ([]float64, error) {
