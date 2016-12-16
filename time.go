@@ -50,7 +50,7 @@ func Weekend(t []time.Time) []float64 {
 	return o
 }
 
-// Month returns a two dimensional array of 1 or zero values, where
+// Year returns a two dimensional array of 1 or zero values, where
 // the first dimension of the array is of length (end - start), where
 // start and end are the first and last years considered, and corresponds
 // to the year, and the second dimension of the array is
