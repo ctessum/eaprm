@@ -72,3 +72,33 @@ func TestWeekend(t *testing.T) {
 		t.Errorf("weekend: have %v, want %v", weekend, want)
 	}
 }
+
+func TestYear(t *testing.T) {
+	times := []time.Time{
+		time.Date(2000, time.July, 20, 23, 0, 0, 0, time.UTC),
+		time.Date(2001, time.October, 24, 3, 0, 0, 0, time.UTC),
+		time.Date(2003, time.October, 14, 11, 0, 0, 0, time.UTC),
+	}
+	years, err := Year(times, 2000, 2003)
+	if err != nil {
+		t.Fatal(err)
+	}
+	sum := 0.0
+	for _, m := range years {
+		for _, mm := range m {
+			sum += mm
+		}
+	}
+	if sum != 3 {
+		t.Errorf("sum: have %g but want %d", sum, 3)
+	}
+	if years[0][0] != 1 {
+		t.Error("times[0][0] should equal 1")
+	}
+	if years[1][1] != 1 {
+		t.Error("times[1][1] should equal 1")
+	}
+	if years[3][2] != 1 {
+		t.Error("times[3][2] should equal 1")
+	}
+}
