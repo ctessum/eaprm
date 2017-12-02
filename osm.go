@@ -1,7 +1,6 @@
 package eaprm
 
 import (
-	"fmt"
 	"io"
 
 	"github.com/ctessum/geom"
@@ -26,40 +25,3 @@ func NewOSM(f io.ReadSeeker) *OSM {
 // them to and returns a relation between all of the features
 // and each of the points.
 type FeatureFunc func([]*osm.GeomTags, []geom.Point) ([]float64, error)
-
-type geomType int
-
-const (
-	point geomType = iota
-	line
-	poly
-	collection
-)
-
-func dominantType(gt []*osm.GeomTags) (geomType, error) {
-	var points, lines, polys, collections int
-	for _, g := range gt {
-		switch g.Geom.(type) {
-		case geom.PointLike:
-			points++
-		case geom.Linear:
-			lines++
-		case geom.Polygonal:
-			polys++
-		case geom.GeometryCollection:
-			collections++
-		default:
-			return -1, fmt.Errorf("invalid geometry type %#v", g.Geom)
-		}
-	}
-	if points >= lines && points >= polys && points >= collections {
-		return point, nil
-	}
-	if lines > points && lines >= polys && lines >= collections {
-		return line, nil
-	}
-	if polys > points && polys > lines && polys >= collections {
-		return poly, nil
-	}
-	return collection, nil
-}

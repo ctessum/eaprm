@@ -12,18 +12,18 @@ import (
 // of each of the point locations of interest.
 func Buffer(radius float64) FeatureFunc {
 	return func(features []*osm.GeomTags, points []geom.Point) ([]float64, error) {
-		typ, err := dominantType(features)
+		typ, err := osm.DominantType(features)
 		if err != nil {
 			return nil, err
 		}
 		switch typ {
-		case point:
+		case osm.Point:
 			return Normalize(pointBuffer(radius, features, points)), nil
-		case line:
+		case osm.Line:
 			return Normalize(lineBuffer(radius, features, points)), nil
-		case poly:
+		case osm.Poly:
 			return Normalize(polyBuffer(radius, features, points)), nil
-		case collection:
+		case osm.Collection:
 			return nil, nil
 		default:
 			panic("invalid type")

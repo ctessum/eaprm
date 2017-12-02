@@ -28,19 +28,19 @@ const (
 func InMAP(r *sr.Reader, pol InMAPPol) FeatureFunc {
 	// TODO: match projections
 	return func(features []*osm.GeomTags, points []geom.Point) ([]float64, error) {
-		typ, err := dominantType(features)
+		typ, err := osm.DominantType(features)
 		if err != nil {
 			return nil, err
 		}
 		var emis []*inmap.EmisRecord
 		switch typ {
-		case point:
+		case osm.Point:
 			emis = pointEmis(features, pol)
-		case line:
+		case osm.Line:
 			emis = lineEmis(features, pol)
-		case poly:
+		case osm.Poly:
 			emis = polyEmis(features, pol)
-		case collection:
+		case osm.Collection:
 			return nil, nil
 		default:
 			panic("invalid type")
