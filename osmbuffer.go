@@ -4,7 +4,6 @@ import (
 	"github.com/ctessum/geom"
 	"github.com/ctessum/geom/encoding/osm"
 	"github.com/ctessum/geom/index/rtree"
-	"github.com/ctessum/geom/op"
 )
 
 // Buffer returns a FeatureFunc that sums the count (for point features),
@@ -19,11 +18,11 @@ func Buffer(radius float64) FeatureFunc {
 		}
 		switch typ {
 		case point:
-			return pointBuffer(radius, features, points), nil
+			return Normalize(pointBuffer(radius, features, points)), nil
 		case line:
-			return lineBuffer(radius, features, points), nil
+			return Normalize(lineBuffer(radius, features, points)), nil
 		case poly:
-			return polyBuffer(radius, features, points), nil
+			return Normalize(polyBuffer(radius, features, points)), nil
 		case collection:
 			return nil, nil
 		default:
@@ -44,8 +43,9 @@ func pointBuffer(radius float64, features []*osm.GeomTags, points []geom.Point) 
 	for _, f := range features {
 		switch f.Geom.(type) {
 		case geom.PointLike:
-			for _, pt := range f.Geom.(geom.PointLike).Points() {
-				featureIndex.Insert(pt)
+			p := f.Geom.Points()
+			for i := 0; i < f.Geom.Len(); i++ {
+				featureIndex.Insert(p())
 			}
 		}
 	}
@@ -76,12 +76,9 @@ func lineBuffer(radius float64, features []*osm.GeomTags, points []geom.Point) [
 	for i, p := range points {
 		buf := p.Buffer(radius, Segments)
 		for _, fI := range featureIndex.SearchIntersect(buf.Bounds()) {
-			isect, err := op.Construct(buf, fI.(geom.Linear), op.INTERSECTION)
-			if err != nil {
-				panic(err)
-			}
+			isect := fI.(geom.Linear).Clip(buf)
 			if isect != nil {
-				o[i] += isect.(geom.Linear).Length()
+				o[i] += isect.Length()
 			}
 		}
 	}

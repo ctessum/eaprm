@@ -51,7 +51,7 @@ func InMAP(r *sr.Reader, pol InMAPPol) FeatureFunc {
 			if err != nil {
 				return nil, err
 			}
-			floats.Add(o, conc)
+			floats.Add(o, conc.TotalPM25())
 		}
 		return o, nil
 	}
