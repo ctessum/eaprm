@@ -61,7 +61,7 @@ func TestBuffer(t *testing.T) {
 		Cols: figCols,
 	}
 
-	f, err := os.Open(os.ExpandEnv("${GOPATH}/src/github.com/ctessum/geom/encoding/osm/testdata/honolulu_hawaii.osm.pbf"))
+	f, err := os.Open(os.ExpandEnv("testdata/honolulu_hawaii.osm.pbf"))
 	defer f.Close()
 	if err != nil {
 		t.Fatal(err)
